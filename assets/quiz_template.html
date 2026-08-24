@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期末复习刷题</title>
+<style>
+:root{--green:#1a7f4e;--green-l:#e8f5ee;--red:#d64545;--red-l:#fdeaea;--gray:#8a95a0;--bg:#f4f6f8;--card:#fff;--border:#e3e8ee;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:#22303c;line-height:1.65;padding-bottom:90px}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+/* ---------- 顶部 ---------- */
+header{background:linear-gradient(135deg,#1a7f4e,#2ea36b);color:#fff;border-radius:14px;padding:18px 20px;margin-bottom:14px}
+header h1{font-size:19px;font-weight:700}
+header .sub{font-size:12.5px;opacity:.85;margin-top:4px}
+/* ---------- 首页 ---------- */
+#home .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+#home h2{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.mode-btn{display:block;width:100%;text-align:left;background:var(--green-l);color:var(--green);border:1.5px solid var(--green);border-radius:10px;padding:13px 16px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;transition:.15s}
+.mode-btn:hover{background:#d5eede}
+.mode-btn small{display:block;font-weight:400;font-size:12px;color:#5a6b78;margin-top:2px}
+.mode-btn.warn{background:var(--red-l);color:var(--red);border-color:var(--red)}
+.mode-btn.warn:hover{background:#fbdcdc}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px}
+.meta-chip{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12.5px;color:#4a5a68}
+/* ---------- 答题页 ---------- */
+.topbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#5a6b78;margin-bottom:10px}
+.topbar b{color:var(--green)}
+.progress{height:6px;background:#e6ebef;border-radius:3px;overflow:hidden;margin-bottom:14px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,#2ea36b,#1a7f4e);border-radius:3px;transition:width .3s}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 18px;box-shadow:0 1px 3px rgba(20,40,60,.04)}
+.qtype{display:inline-block;font-size:11.5px;background:var(--green-l);color:var(--green);border-radius:6px;padding:2px 8px;margin-bottom:10px;font-weight:600}
+.qtext{font-size:16.5px;font-weight:600;margin-bottom:16px;white-space:pre-wrap}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;cursor:pointer;transition:.13s;user-select:none}
+.opt:active{transform:scale(.99)}
+.opt .tag{flex:none;width:24px;height:24px;border-radius:50%;background:#fff;border:1.5px solid #c8d2db;color:#5a6b78;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.opt.sel{border-color:var(--green);background:var(--green-l)}
+.opt.sel .tag{background:var(--green);border-color:var(--green);color:#fff}
+.opt.right{border-color:var(--green);background:var(--green-l)}
+.opt.right .tag{background:var(--green);border-color:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-l)}
+.opt.wrong .tag{background:var(--red);border-color:var(--red);color:#fff}
+.explain{display:none;margin-top:14px;background:#f0f7fb;border-left:3px solid #3b82c4;border-radius:0 8px 8px 0;padding:11px 13px;font-size:13.5px;color:#33566e}
+.explain b{color:#2b6cb0}
+.answer-pad{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--border);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:none;z-index:50}
+.answer-pad .inner{max-width:720px;margin:0 auto;display:flex;gap:10px}
+.answer-pad button{flex:1;border:none;border-radius:10px;padding:13px 0;font-size:15.5px;font-weight:700;cursor:pointer}
+#btnSubmit{background:var(--green);color:#fff}
+#btnSubmit:disabled{background:#b8ccc1}
+#btnNext{background:var(--green-l);color:var(--green);border:1.5px solid var(--green)!important}
+#btnFinish{background:var(--green-l);color:var(--green);border:1.5px solid var(--green)!important}
+/* ---------- 结果页 ---------- */
+.score-circle{width:130px;height:130px;border-radius:50%;background:conic-gradient(var(--green) calc(var(--p)*1%),#e6ebef 0);display:flex;align-items:center;justify-content:center;margin:10px auto}
+.score-circle .in{width:102px;height:102px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-circle .num{font-size:30px;font-weight:800;color:var(--green)}
+.score-circle .lab{font-size:11.5px;color:var(--gray)}
+/* ---------- 错题回顾 ---------- */
+.review-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 16px;margin-bottom:10px}
+.review-item .q{font-weight:600;font-size:15px;margin-bottom:8px}
+.review-item .a{font-size:13.5px;color:var(--red);margin-bottom:4px}
+.review-item .r{font-size:13.5px;color:var(--green)}
+.review-item .e{font-size:12.5px;color:#5a6b78;margin-top:6px;background:var(--bg);border-radius:8px;padding:8px 10px}
+.back-btn{display:block;width:100%;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:15px;font-weight:600;color:#4a5a68;cursor:pointer;margin-top:14px}
+.hidden{display:none!important}
+.tip{font-size:12px;color:var(--gray);text-align:center;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1 id="hTitle">期末复习刷题</h1>
+  <div class="sub" id="hSub"></div>
+</header>
+
+<!-- 首页 -->
+<div id="home">
+  <div class="card">
+    <h2>📋 题库概况</h2>
+    <div class="meta-row" id="metaRow"></div>
+    <p class="tip" style="text-align:left;margin-top:12px">💡 友情提示：多找学长学姐要历年题库和复习资料，划的重点往往就在里面。</p>
+  </div>
+  <div class="card">
+    <h2>🚀 开始刷题</h2>
+    <button class="mode-btn" onclick="startQuiz('order')">顺序练习<small>从头到尾过一遍，答完即时判分</small></button>
+    <button class="mode-btn" onclick="startQuiz('random')">随机乱序<small>打乱题目和选项顺序，检验真实掌握度</small></button>
+    <button class="mode-btn warn hidden" id="btnWrongOnly" onclick="startQuiz('wrongonly')">只刷错题<small id="wrongCnt"></small></button>
+  </div>
+</div>
+
+<!-- 答题页 -->
+<div id="quiz" class="hidden">
+  <div class="topbar"><span>第 <b id="qNow">1</b> / <span id="qTotal">10</span> 题</span><span id="modeTag"></span></div>
+  <div class="progress"><i id="progBar" style="width:0%"></i></div>
+  <div class="qcard">
+    <span class="qtype" id="qType"></span>
+    <div class="qtext" id="qText"></div>
+    <div class="opts" id="opts"></div>
+    <div class="explain" id="explain"></div>
+  </div>
+  <div class="answer-pad"><div class="inner">
+    <button id="btnSubmit" onclick="submitAns()">提交答案</button>
+    <button id="btnNext" class="hidden" onclick="nextQ()">下一题</button>
+    <button id="btnFinish" class="hidden" onclick="finishQuiz()">看成绩</button>
+  </div></div>
+</div>
+
+<!-- 结果页 -->
+<div id="result" class="hidden">
+  <div class="qcard" style="text-align:center">
+    <div class="score-circle" id="scoreCircle"><div class="in"><div class="num" id="scoreNum">0</div><div class="lab">正确率</div></div></div>
+    <div id="resultDetail" style="font-size:14px;color:#4a5a68"></div>
+  </div>
+  <div class="qcard" style="margin-top:14px">
+    <h2 style="font-size:15px;margin-bottom:8px">❌ 错题回顾</h2>
+    <div id="wrongList"></div>
+    <div id="noWrong" class="hidden" style="font-size:14px;color:var(--green);padding:8px 0">🎉 全对，一题不错，稳了！</div>
+  </div>
+  <button class="back-btn" onclick="location.reload()">↩ 返回重新刷题</button>
+</div>
+
+</div>
+<script>
+/* ============ 题库数据 ============
+ * 格式：{t:"single"|"multi"|"judge", q:"题干", o:["选项A","选项B",...], a:[正确索引数组], e:"解析(可选)"}
+ * judge 题：o 固定为 ["正确","错误"]
+ * ================================== */
+const QUIZ_DATA = /*__QUIZ_DATA__*/[];
+
+/* ---- 以下为通用引擎，无需改动 ---- */
+let Q=[],idx=0,selected=new Set(),done=false,wrongSet=new Set(),modeName="";
+const $=id=>document.getElementById(id);
+const TYPE_LABEL={single:"单选",multi:"多选",judge:"判断"};
+
+function init(){
+  const n=QUIZ_DATA.length;
+  const c={};QUIZ_DATA.forEach(q=>c[q.t]=(c[q.t]||0)+1);
+  $("metaRow").innerHTML=`<span class="meta-chip">共 ${n} 题</span>`+
+    Object.keys(c).map(k=>`<span class="meta-chip">${TYPE_LABEL[k]} ${c[k]} 题</span>`).join("")+
+    `<span class="meta-chip">含解析 ${QUIZ_DATA.filter(q=>q.e).length} 题</span>`;
+  const saved=localStorage.getItem("quiz_wrong_ids");
+  if(saved){const w=JSON.parse(saved).filter(i=>i<n);
+    if(w.length){wrongSet=new Set(w);$("btnWrongOnly").classList.remove("hidden");
+      $("wrongCnt").textContent=`当前积攒 ${w.length} 道错题，逐个消灭`;}
+  }
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startQuiz(mode){
+  modeName=mode;
+  if(mode==="order")Q=QUIZ_DATA.map((q,i)=>({q,origin:i}));
+  else if(mode==="random")Q=shuffle(QUIZ_DATA.map((q,i)=>({q,origin:i})));
+  else Q=shuffle([...wrongSet]).map(i=>({q:QUIZ_DATA[i],origin:i}));
+  idx=0;
+  $("home").classList.add("hidden");$("quiz").classList.remove("hidden");
+  $("modeTag").textContent={order:"顺序练习",random:"随机乱序",wrongonly:"错题重刷"}[mode];
+  renderQ();
+}
+function renderQ(){
+  done=false;selected=new Set();
+  const {q}=Q[idx];
+  $("qNow").textContent=idx+1;$("qTotal").textContent=Q.length;
+  $("progBar").style.width=(idx/Q.length*100)+"%";
+  $("qType").textContent=TYPE_LABEL[q.t]+(q.t==="multi"?"（多选）":"");
+  $("qText").textContent=q.q;
+  $("explain").style.display="none";
+  $("btnSubmit").disabled=false;$("btnSubmit").classList.remove("hidden");
+  $("btnNext").classList.add("hidden");$("btnFinish").classList.add("hidden");
+  document.querySelector(".answer-pad").style.display="block";
+  let order=q.o.map((_,i)=>i);
+  if(modeName==="random"&&q.t!=="judge"){order=shuffle(order);q._order=order;}else q._order=order;
+  $("opts").innerHTML=q._order.map((oi,k)=>`<div class="opt" data-oi="${oi}" onclick="pick(${oi})"><span class="tag">${"ABCDEFGH"[k]}</span><span>${q.o[oi]}</span></div>`).join("");
+}
+function pick(oi){
+  if(done)return;
+  const q=Q[idx].q;
+  if(q.t==="multi"){selected.has(oi)?selected.delete(oi):selected.add(oi);}
+  else{selected=new Set([oi]);}
+  document.querySelectorAll(".opt").forEach(el=>{
+    el.classList.toggle("sel",selected.has(+el.dataset.oi));});
+}
+function submitAns(){
+  const q=Q[idx].q;
+  if(selected.size===0)return alert("先选一个答案再提交～");
+  done=true;
+  const ans=new Set(q.a);
+  const right=[...ans].every(a=>selected.has(a))&&selected.size===ans.size;
+  if(!right)wrongSet.add(Q[idx].origin);
+  document.querySelectorAll(".opt").forEach(el=>{
+    const oi=+el.dataset.oi;
+    if(ans.has(oi))el.classList.add("right");
+    else if(selected.has(oi))el.classList.add("wrong");
+    el.classList.remove("sel");el.style.pointerEvents="none";
+  });
+  const ex=$("explain");
+  ex.innerHTML=(right?"<b>✔ 回答正确</b>":"<b>✘ 回答错误</b>，正确答案："+
+    [...ans].map(a=>"ABCDEFGH"[q._order.indexOf(a)]).join("、"))+
+    (q.e?"<br>"+q.e:"");
+  ex.style.display="block";
+  $("btnSubmit").classList.add("hidden");
+  (idx===Q.length-1?$("btnFinish"):$("btnNext")).classList.remove("hidden");
+  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+}
+function nextQ(){idx++;renderQ();}
+function finishQuiz(){
+  const right=Q.length-[...wrongSet].filter(w=>Q.some(x=>x.origin===w)).length;
+  const total=Q.length,acc=Math.round(right/total*100);
+  $("quiz").classList.add("hidden");$("result").classList.remove("hidden");
+  $("scoreCircle").style.setProperty("--p",acc);
+  $("scoreNum").textContent=acc+"%";
+  $("resultDetail").innerHTML=`共 ${total} 题 · 答对 <b style="color:var(--green)">${right}</b> 题 · 答错 <b style="color:var(--red)">${total-right}</b> 题<br>`+
+    (acc>=90?"🏆 这个正确率，期末稳了！":acc>=70?"👍 还不错，错题再刷一遍更稳":"💪 别慌，把错题吃透就上来了");
+  const wl=Q.filter(x=>wrongSet.has(x.origin));
+  $("wrongList").innerHTML=wl.length?wl.map(x=>{
+    const q=x.q;
+    return `<div class="review-item"><div class="q">${q.q}</div>`+
+    `<div class="a">你的答案有误 · 正确：${q.a.map(a=>q.o[a]).join("；")}</div>`+
+    (q.e?`<div class="e">📌 ${q.e}</div>`:"")+`</div>`;}).join(""):"";
+  $("noWrong").classList.toggle("hidden",wl.length>0);
+  localStorage.setItem("quiz_wrong_ids",JSON.stringify([...wrongSet]));
+  window.scrollTo(0,0);
+}
+init();
+</script>
+</body>
+</html>
